@@ -8,4 +8,4 @@ BlackShuriken is a Discord type application built for macOS.
 1) Username
 2) Bio
 3) Email (if applicable)
-4) Password (if given)
+4) Password
