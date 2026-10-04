@@ -22,6 +22,7 @@ jobs:
           - arch: arm64
             runner: macos-latest
 
+    # Supabase values are injected only during the GitHub Actions build.
     env:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
