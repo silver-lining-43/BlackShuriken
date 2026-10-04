@@ -1,0 +1,50 @@
+name: Build macOS
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build macOS ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            runner: macos-15-intel
+          - arch: arm64
+            runner: macos-latest
+
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build DMG
+        run: npx electron-forge make --platform=darwin --arch=${{ matrix.arch }}
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: BlackShuriken-macOS-${{ matrix.arch }}
+          path: out/make/**/*.dmg
+          if-no-files-found: error
